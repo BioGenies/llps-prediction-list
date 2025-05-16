@@ -1,0 +1,244 @@
+---
+title: "Centralized Resource for LLPS Prediction Tools"
+output: 
+  html_document:
+    theme: paper
+    self-contained: false
+---
+<style type="text/css">
+.main-container {
+max-width: 1800px;
+margin-left: auto;
+margin-right: auto;
+}
+</style>
+
+## {.tabset}
+
+### Main Information and Access
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library(DT)
+library(dplyr)
+
+
+table_complete <- readRDS("../FileToRead/LLPS-tools_relevant.RDS") %>% 
+  mutate(
+    DOI = ifelse(
+      !is.na(`doi`) & `doi` != "",
+      paste0("<a href='https://doi.org/", `doi`, "'>", `doi`, "</a>"),
+      NA),
+    year = as.integer(year),
+    label = factor(label, levels=c("Specific", "General", "Region","Score and region for PrLDs", 
+                                   "Specific and Region", "General and Phase diagram","General and Region",
+                                   "Unavailable")),
+    reported_threshold = factor(reported_threshold, levels = c("TRUE",
+                                                               "FALSE", 
+                                                               "Probabilistic")),
+    availability = factor(availability, levels=c("Stand-alone","Online","Online & Stand-alone",
+                                                   "-")),
+    webserver_link = ifelse(
+      !is.na(online_tool) & online_tool != "None",
+      paste0("<a href='", online_tool, "' target='_blank'>Web server</a>"),
+      "FALSE"),
+    server_activity = factor(server_activity, levels=c("TRUE", "FALSE")),
+    server_functionality = factor(server_functionality, levels=c("TRUE", "FALSE")),
+    model_repo = ifelse(!is.na(model_repo_link) & model_repo_link != "None", 
+                        paste0("<a href='", model_repo_link,"' >Repository</a>"), 
+                        paste0("FALSE")),
+    train_repo = ifelse(!is.na(training_repo_link) & training_repo_link != "None", 
+                        paste0("<a href='", training_repo_link,"' >Repository</a>"), 
+                        paste0("FALSE"))
+    
+  ) %>% 
+  select("name", "description", "year", "DOI", "label","reported_threshold", "availability","webserver_link",
+         "server_activity","server_functionality", "model_repo", "train_repo") %>% 
+  setNames(c("Name","Description","Year", "DOI", "Label","Reported Threshold", "Availability","Web Link",
+           "Web Activity", "Web Functionality", "Model Repository", "Training Repository"))
+
+datatable(
+  table_complete,
+  rownames = FALSE,
+  escape = FALSE,
+  extensions = c('Buttons', 'FixedColumns', 'FixedHeader'),
+  filter = 'top', style = "bootstrap",
+  options = list (
+    pageLength = nrow(table_complete),
+    dom = 'Bfrtip',
+    buttons = c("copy", "csv", "excel", "pdf", "print"),
+    autoWidth = TRUE,
+    searchHighlight = TRUE,
+    paging = FALSE,
+    scrollCollapse = FALSE,
+    fixedHeader = TRUE,
+    fixedColumns = list(leftColumns = 2))) %>% 
+  formatStyle(c("Web Link","Model Repository","Training Repository"),
+    backgroundColor = styleEqual("FALSE", '#ededed', default = '#d6edff')
+  ) %>% 
+  formatStyle(c("Reported Threshold"),
+    backgroundColor = styleEqual(c("FALSE", "TRUE"),c('#ededed', '#d6edff'))
+  ) %>% 
+  formatStyle(c("Web Activity", "Web Functionality"),
+    backgroundColor = styleEqual("FALSE", '#ededed', default = '#d6edff')
+  )
+
+```
+
+
+7 tool(s) have been excluded, which are:
+
+- [FuzPred](https://doi.org/10.1016/j.jmb.2020.02.017) (2020) because the same developers created "FuzDrop" a tool specifically intended for LLPS.
+- [MaGS](https://doi.org/10.1016/j.jmb.2020.02.020) (2020) because it relies heavily on experimental data, which limits its use when such data is unavailable. To address this, the same developers created MaGSeq, a follow-up tool designed to predict LLPS involvement without depending on experimental inputs. MaGS predicts protein localization into cellular condensates using a GLM trained on experimentally derived features, including protein abundance, intrinsic disorder, phosphorylation, RNA interaction, PScore, CamSol, and amino acid composition. [Web server](https://grapes.msl.ubc.ca/precomputed) &  [Repository](https://github.com/ekuec/2019_StressGranuleFeatures/blob/master/0README).
+- [PASTA+PScore](https://doi.org/10.3390/biom12121771) (2022) because it is not clear.
+- [LLPS-Wise](https://doi.org/10.1101/2022.07.25.501404) (2022) because it is a pre-print.
+Algorithm based on NN to map protein-protein interaction network with LLPS data. [Repository](https://github.com/promethiume/LLPSWise)
+- [PredLLPS-PSSM](https://doi.org/10.1093/bib/bbad299) (2023) because the same developers created "Opt_PredLLPS" a newer, functional and optimized tool for LLPS predictions compared to this version.
+- [FINCHES](https://doi.org/10.1101/2024.06.03.597104) (2024) because it is a pre-print. 
+FINCHES applies coarse-grained force field parameters and a mean-field model to approximate homo- and heterotypic interactions, including phase diagrams. [Web server](https://colab.research.google.com/drive/1WuzvCnRmOiq4nQFYfEeETSnrACBuv7kG?usp=sharing) &  [Repository](https://github.com/idptools/finches-colab).
+- [PhaSeek](https://doi.org/10.1101/2025.01.27.635039) (2025) because it is a pre-print.
+
+
+
+### Details and Datasets
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library(DT)
+library(dplyr)
+
+table_complete <- readRDS("../FileToRead/LLPS-tools_relevant.RDS") %>% 
+  mutate(
+    name = ifelse(
+      !is.na(`doi`) & `doi` != "",
+      paste0("<a href='https://doi.org/", `doi`, "'>", `name`, "</a>"),
+      NA),
+    year = as.integer(year),
+    label = factor(label, levels=c("Specific", "General", "Region","Score and region for PrLDs", 
+                                   "Specific and Region", "General and Phase diagram","General and Region",
+                                   "Unavailable")),
+    reported_threshold = factor(reported_threshold, levels = c("TRUE",
+                                                               "FALSE", 
+                                                               "Probabilistic")),
+    threshold_type = factor(threshold_type, levels=c("Non-probabilistic continuous score",
+                                                     "Probabilistic continous score",
+                                                     "Probabilistic continuous scores along assigned discrete class",
+                                                     "Region", "Percentiles", "Unavailable")),
+    availability_hyperlinked = case_when(
+      availability == "Online" & !is.na(online_tool) & online_tool != "None" ~ 
+      paste0("<a href='", online_tool, "' target='_blank'>Online</a>"),
+      
+      availability == "Stand-alone" & !is.na(model_repo_link) & model_repo_link != "None" ~ 
+      paste0("<a href='", model_repo_link, "' target='_blank'>Stand-alone</a>"),
+      
+      availability == "Online & Stand-alone" & 
+      !is.na(online_tool) & online_tool != "None" & 
+      !is.na(model_repo_link) & model_repo_link != "None" ~ 
+      paste0("<a href='", online_tool, "' target='_blank'>Online</a> & <a href='", 
+             model_repo_link, "' target='_blank'>Stand-alone</a>"),
+      TRUE ~ availability  )
+    
+  ) %>% 
+  select("name","year","description",  "more_description", "datasets", "label","reported_threshold", "threshold", "threshold_type", "availability_hyperlinked")%>% 
+  setNames(c("Name","Year","Description",  "More Description", "Datasets", "Label","Reported Threshold", "Threshold", "Threshold Type", "Availability Hyperlinked"))
+
+datatable(
+  table_complete,
+  rownames = FALSE,
+  escape = FALSE,
+  extensions = c('Buttons', 'FixedColumns', 'FixedHeader'),
+  filter = 'top', style = "bootstrap",
+  options = list (
+    pageLength = nrow(table_complete),
+    dom = 'Bfrtip',
+    buttons = c("copy", "csv", "excel", "pdf", "print"),
+    autoWidth = TRUE,
+    searchHighlight = TRUE,
+    paging = FALSE,
+    scrollCollapse = FALSE,
+    fixedHeader = TRUE,
+    fixedColumns = list(leftColumns = 1)
+  )) %>% 
+  formatStyle(c("Reported Threshold"),
+    backgroundColor = styleEqual(c("FALSE", "TRUE"),c('#ededed', '#d6edff'))
+  )
+
+```
+
+
+### About
+
+Protein phase separation has emerged as an important mechanism for cellular compartmentalization, notably through liquid-liquid phase separation (LLPS).
+
+LLPS is a key mechanism for cellular compartmentalization, forming membrane-less organelles that support critical physiological processes like nuclear transcription and synaptic transmission. Dysregulation of LLPS is linked to diseases such as amyotrophic lateral sclerosis (ALS), underscoring the need to accurately identify phase-separating proteins (PSPs). 
+
+To support this, over 20 computational tools have been developed to predict LLPS behavior, using approaches ranging from simpler heuristic rules to machine learning models. 
+
+However, these tools vary widely in their design and intended use, and there is currently no unified resource to help researchers compare and select the most appropriate one. This creates a barrier for experimental scientists seeking efficient and accurate predictions.
+
+Our work addresses this gap by providing a comprehensive review of available LLPS predictors. We aim to offer a practical, centralized guide to help researchers choose the right tool for their specific scientific goals, ultimately reducing the cost and time of trial-and-error experimentation.
+
+### Authors
+
+#### Carlos Pintado-Grima <a href="https://orcid.org/0000-0002-8544-959X"><img src="https://orcid.org/sites/default/files/images/orcid_16x16.png"/></a>
+
+Carlos Pintado-Grima is a PhD student in Bioinformatics at the Institute of Biotechnology and Biomedicine at the Autonomous University of Barcelona (UAB). He obtained his degree in Biology and the Bachelor of Science at UAB and Thompson Rivers University (Kamloops, BC, Canada). He recieved his M.Sc. in Bioinformatics in 2020 at UAB. His current research is focused on the development and analysis of bioinformatics tools to better understand protein aggregation, folding and misfolding.
+
+Contact: Carlos.Pintado@uab.cat\
+Twitter: https://twitter.com/cpintadogrima
+
+![](../photos/Carlos.png "Carlos"){width="180px"}
+\
+\
+
+#### Oriol Bárcenas <a href="https://orcid.org/0000-0002-8439-4005"><img src="https://orcid.org/sites/default/files/images/orcid_16x16.png"/></a>
+
+Oriol Bárcenas is a PhD student in Bioinformatics, affiliated with the Autonomous University of Barcelona (UAB) and  the Spanish National Research Council (CSIC). He completed his B.Sc degree in Biotechnology at UAB in 2022, followed by an M.Sc. in Modelling for Science and Engineering in 2023, also from UAB. His current research is focused on the analysis of protein folding and aggregation data, alongside in silico protein design and molecular dynamics (MD).
+
+Contact: Oriol.Barcenas@uab.cat \
+Twitter: https://twitter.com/oriolbarcenas
+
+![](../photos/oriol.png "Oriol"){width="180px"}
+\
+\
+
+#### Valentín Iglesias <a href="https://orcid.org/0000-0002-6133-0869"><img src="https://orcid.org/sites/default/files/images/orcid_16x16.png"/></a>
+
+Valentín Iglesias is a PhD in Biochemistry and Molecular Biology working as a post-doc in the Centre for Clinical Research at the Medical University of Białystok. His research is based on protein conformational conversion on structured and mainly intrinsically disordered proteins and the link between protein adaptations and taxonomic evolution.  
+
+Contact: Valentin.Iglesias@uab.cat \
+Twitter: https://twitter.com/ValentnIglesias. \
+
+![](../photos/Valen.jpeg "Valen"){width="180px"}
+\
+\
+
+#### Eva Arribas-Ruiz <a href="https://orcid.org/0009-0006-3110-0057"><img src="https://orcid.org/sites/default/files/images/orcid_16x16.png"/></a>
+
+Eva Arribas holds a B.Sc in Biotechnology from the University of Barcelona and an M.Sc in Bioinformatics from UAB. She conducted a research stay at the Medical University of Bialystok, focusing on the analysis and prediction of liquid-liquid phase separation (LLPS).
+
+Contact: Eva.Arribas@uab.cat  \
+
+![](../photos/Eva.png "Eva"){width="180px"}
+\
+\
+
+#### Michał Burdukiewicz <a href="https://orcid.org/0000-0001-8926-582X"><img src="https://orcid.org/sites/default/files/images/orcid_16x16.png"/></a>
+
+Michał Burdukiewicz is currently working as a post-doc at the Institute of Biotechnology and Biomedicine at the Autonomous University of Barcelona and a research assistant in the Centre for Clinical Research at the Medical University of Białystok. His research interests cover machine learning applications in the functional analysis of peptides and proteins, focusing on amyloids. Moreover, he is co-developing tools for proteomics, mainly hydrogen-deuterium exchange monitored by mass spectrometry.
+
+Contact: michaljan.burdukiewicz@uab.cat \
+Twitter: https://twitter.com/burdukiewicz \
+Website: https://github.com/michbur \
+![](../photos/michal.jpg "Michal"){width="180px"}
+\
+\
+
+#### Salvador Ventura <a href="https://orcid.org/0000-0002-9652-6351"><img src="https://orcid.org/sites/default/files/images/orcid_16x16.png"/></a>
+
+Salvador Ventura is a PhD in Biology and professor of Biochemistry and Molecular Biology at the Autonomous University of Barcelona (UAB). He is an ICREA researcher at the Institute of Biotechnology and Biomedicine (IBB) of the UAB, where he was also director, and leads a research group that investigates the link between protein structure and degenerative diseases to create new molecules to treat them. 
+
+Contact: Salvador.Ventura@uab.cat \
+Twitter: https://twitter.com/PPMC_UAB \
+Website: https://ibb.uab.cat/wp-content/themes/viral/modules/ibb_membres/view_grup.php?CodiGrup=36 \
+
+![](../photos/Salva.jpg "Salva"){width="180px"}
+

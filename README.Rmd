@@ -1,0 +1,50 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/",
+  out.width = "100%"
+)
+```
+
+# Centralized Resource for LLPS Prediction Tools
+
+This curated list collects models developed to predict liquid-liquid phase separation (LLPS) propensity in proteins and related properties. For an interactive and browseable list, please visit:(Link to Website)
+
+```{r, echo=FALSE,message=FALSE,results='asis'}
+library(glue)
+library(dplyr)
+
+write_entry <- function(x) {
+  res <- glue_data(x, 
+                   "1. {name} ({year}): [publication](https://doi.org/{doi})")
+  
+  if (!is.na(x$online_tool) && x$online_tool != "None") {
+    res <- glue("{res}; [web server]({x$online_tool})")
+  }
+  
+  if (!is.na(x$model_repo_link) && x$model_repo_link != "None") {
+    res <- glue("{res}; [model repository]({x$model_repo_link})")
+  }
+  
+  paste0(res, ".")
+}
+
+
+df <- readRDS("~/LLPS-tools-web/FileToRead/LLPS-tools_relevant.RDS") %>% 
+  mutate(year = as.numeric(year))
+
+
+# apply the function row-wise
+entries <- apply(df, 1, function(row) write_entry(as.list(row)))
+
+cat(paste(entries, collapse = "\n"), sep = "\n")
+```
+
