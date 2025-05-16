@@ -5,7 +5,8 @@
 
 This curated list collects models developed to predict liquid-liquid
 phase separation (LLPS) propensity in proteins and related properties.
-For an interactive and browseable list, please visit:(Link to Website)
+For an interactive and browseable list, please visit:
+<https://biogenies.info/llps-prediction-list/>
 
 1.  PLAAC (2014):
     [publication](https://doi.org/10.1093/bioinformatics/btu310); [web

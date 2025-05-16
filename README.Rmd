@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 
 # Centralized Resource for LLPS Prediction Tools
 
-This curated list collects models developed to predict liquid-liquid phase separation (LLPS) propensity in proteins and related properties. For an interactive and browseable list, please visit:(Link to Website)
+This curated list collects models developed to predict liquid-liquid phase separation (LLPS) propensity in proteins and related properties. For an interactive and browseable list, please visit: https://biogenies.info/llps-prediction-list/ 
 
 ```{r, echo=FALSE,message=FALSE,results='asis'}
 library(glue)
@@ -38,7 +38,7 @@ write_entry <- function(x) {
 }
 
 
-df <- readRDS("~/LLPS-tools-web/FileToRead/LLPS-tools_relevant.RDS") %>% 
+df <- readRDS("./FileToRead/LLPS-tools_relevant.RDS") %>% 
   mutate(year = as.numeric(year))
 
 
