@@ -4,10 +4,7 @@ library(DT)
 library(readr)
 
 
-#fileaddress <- "~/LLPS-tools-web/LLPS-Prediction-Tools_Review-table.tsv"
-
-
-fileaddress <- "~/LLPS-tools-web/FileToRead/Table_Test.tsv"
+fileaddress <- "./FileToRead/Table_Test.tsv"
 
 table_raw <- read_tsv(fileaddress) %>%
   as.data.frame() %>%
@@ -57,7 +54,7 @@ res <- cr_works(dois = "10.1093/bib/bbab065")
 print(res$data$is.referenced.by.count) #79 
 
 
-saveRDS(relevant_tools, file = "~/LLPS-tools-web/FileToRead/LLPS-tools_relevant.RDS")
+saveRDS(relevant_tools, file = "./FileToRead/LLPS-tools_relevant.RDS")
 
 
 
