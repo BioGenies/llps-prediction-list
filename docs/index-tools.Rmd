@@ -63,13 +63,14 @@ datatable(
   extensions = c('Buttons', 'FixedColumns', 'FixedHeader'),
   filter = 'top', style = "bootstrap",
   options = list (
+    scrollY = "500px",
+    scrollCollapse = TRUE,
     pageLength = nrow(table_complete),
     dom = 'Bfrtip',
     buttons = c("copy", "csv", "excel", "pdf", "print"),
     autoWidth = TRUE,
     searchHighlight = TRUE,
     paging = FALSE,
-    scrollCollapse = FALSE,
     fixedHeader = TRUE,
     fixedColumns = list(leftColumns = 2))) %>% 
   formatStyle(c("Web Link","Model Repository","Training Repository"),
@@ -147,13 +148,14 @@ datatable(
   extensions = c('Buttons', 'FixedColumns', 'FixedHeader'),
   filter = 'top', style = "bootstrap",
   options = list (
+    scrollY = "500px",
+    scrollCollapse = TRUE,
     pageLength = nrow(table_complete),
     dom = 'Bfrtip',
     buttons = c("copy", "csv", "excel", "pdf", "print"),
     autoWidth = TRUE,
     searchHighlight = TRUE,
     paging = FALSE,
-    scrollCollapse = FALSE,
     fixedHeader = TRUE,
     fixedColumns = list(leftColumns = 1)
   )) %>% 
