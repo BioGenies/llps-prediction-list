@@ -86,11 +86,10 @@ datatable(
 ```
 
 
-7 tool(s) have been excluded, which are:
+6 tool(s) have been excluded, which are:
 
 - [FuzPred](https://doi.org/10.1016/j.jmb.2020.02.017) (2020) because the same developers created "FuzDrop" a tool specifically intended for LLPS.
 - [MaGS](https://doi.org/10.1016/j.jmb.2020.02.020) (2020) because it relies heavily on experimental data, which limits its use when such data is unavailable. To address this, the same developers created MaGSeq, a follow-up tool designed to predict LLPS involvement without depending on experimental inputs. MaGS predicts protein localization into cellular condensates using a GLM trained on experimentally derived features, including protein abundance, intrinsic disorder, phosphorylation, RNA interaction, PScore, CamSol, and amino acid composition. [Web server](https://grapes.msl.ubc.ca/precomputed) &  [Repository](https://github.com/ekuec/2019_StressGranuleFeatures/blob/master/0README).
-- [PASTA+PScore](https://doi.org/10.3390/biom12121771) (2022) because it is not clear.
 - [LLPS-Wise](https://doi.org/10.1101/2022.07.25.501404) (2022) because it is a pre-print.
 Algorithm based on NN to map protein-protein interaction network with LLPS data. [Repository](https://github.com/promethiume/LLPSWise)
 - [PredLLPS-PSSM](https://doi.org/10.1093/bib/bbad299) (2023) because the same developers created "Opt_PredLLPS" a newer, functional and optimized tool for LLPS predictions compared to this version.
@@ -162,7 +161,6 @@ datatable(
   formatStyle(c("Reported Threshold"),
     backgroundColor = styleEqual(c("FALSE", "TRUE"),c('#ededed', '#d6edff'))
   )
-
 ```
 
 

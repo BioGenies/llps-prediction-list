@@ -3,7 +3,7 @@ library(dplyr)
 library(DT)
 library(readr)
 
-
+#setwd()
 fileaddress <- "./FileToRead/Table_Test.tsv"
 
 table_raw <- read_tsv(fileaddress) %>%
@@ -18,7 +18,7 @@ table_raw <- read_tsv(fileaddress) %>%
     label = Label,
     reported_threshold = `Threshold/Class  reported  by authors`,
     threshold = Threshold,
-    threshold_type = `Type of threhsold`,
+    threshold_type = `Type of threshold`,
     availability = Availability,
     online_tool = `Link to the  online tools`,
     server_activity = `Web  server  activity`,
